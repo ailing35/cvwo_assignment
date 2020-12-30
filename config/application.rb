@@ -1,5 +1,5 @@
 require_relative 'boot'
-
+require 'devise'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -8,6 +8,8 @@ Bundler.require(*Rails.groups)
 
 module MyApp2
   class Application < Rails::Application
+    config.api_only = true
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 

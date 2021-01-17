@@ -5,6 +5,8 @@ Rails.application.routes.draw do
       post 'tasks/create'
       get '/show/:id', to: 'tasks#show'
       delete '/destroy/:id', to: 'tasks#destroy'
+      get '/:id/edit', to: 'tasks#edit'
+      patch 'tasks/:id', to: 'tasks#update'
     end
   end
   root 'homepage#index'

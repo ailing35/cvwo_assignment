@@ -29,6 +29,17 @@ class Api::V1::TasksController < ApplicationController
   private
 
   def task_params
-    params.permit(:title, :date, :completed)
+    params.permit(:title, :completed)
+  end
+
+  def task
+    @task ||= Task.find(params[:id])
+  end
+
+  def edit
+    @task = Task.find(params[:id])
+  end
+
+  def update
   end
 end

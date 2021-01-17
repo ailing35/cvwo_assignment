@@ -9,7 +9,7 @@ class Tasks extends React.Component {
     };
   }
 
-componentDidMount() {
+  componentDidMount() {
     const url = "/api/v1/tasks/index";
     fetch(url)
       .then(response => {
@@ -20,18 +20,52 @@ componentDidMount() {
       })
       .then(response => this.setState({ tasks: response }))
       .catch(() => this.props.history.push("/"));
-}   
+  }
 
-render() {
+  deleteTask(id){
+    
+    const url = `/api/v1/destroy/${id}`;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": token,
+        "Content-Type": "application/json"
+      }
+    })
+
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error("Network response was not ok.");
+    })
+    .then(() => this.props.history.push("/tasks"))
+    .catch(error => console.log(error.message));
+
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.filter(task => task.id !== id),
+    }))
+  }
+
+  render() {
     const { tasks } = this.state;
     const allTasks = tasks.map((task, index) => (
-      <div key={index} className="col-md-6 col-lg-4">
+      <div key={index} className="w-100">
         <div className="card mb-4">
           <div className="card-body">
-            <h5 className="card-title">{task.name}</h5>
-            <Link to={`/task/${task.id}`} className="btn custom-button">
-              View Task
-            </Link>
+            <h5 className="card-title">{task.title}
+              <Link to={`/task/${task.id}`} className="btn custom-button float-right">
+                View Task
+              </Link>
+              <Link to={`/${task.id}/edit`} className="btn custom-button ml-2">
+                Edit Task
+              </Link>
+              <button type="button" className="btn btn-danger float-right" onClick={() => { this.deleteTask(task.id) }}>
+                Delete Task
+              </button>
+            </h5>
           </div>
         </div>
       </div>
@@ -57,7 +91,7 @@ render() {
         <div className="py-5">
           <main className="container">
             <div className="text-right mb-3">
-              <Link to="/task" className="btn custom-button">
+              <Link to="/new_task" className="btn custom-button">
                 Create New Task
               </Link>
             </div>

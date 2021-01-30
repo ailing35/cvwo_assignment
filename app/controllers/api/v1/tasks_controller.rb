@@ -1,6 +1,7 @@
 class Api::V1::TasksController < ApplicationController
+  
   def index
-    task = Task.all.order(created_at: :desc)
+    task = Task.all.order(:tag, created_at: :desc)
     render json: task
   end
 
@@ -26,20 +27,24 @@ class Api::V1::TasksController < ApplicationController
     render json: { message: 'Task deleted!' }
   end
 
-  private
-
-  def task_params
-    params.permit(:title, :completed)
-  end
-
-  def task
-    @task ||= Task.find(params[:id])
-  end
-
   def edit
     @task = Task.find(params[:id])
   end
 
   def update
+    if task
+      render json: task
+    else
+      render json: task.errors
+    end
   end
+
+  private
+    def task
+      @task ||= Task.find(params[:id])
+    end
+
+    def task_params
+      params.permit(:title, :tag)
+    end
 end

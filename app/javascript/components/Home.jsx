@@ -5,9 +5,9 @@ export default () => (
   <div className="vw-100 vh-100 primary-color d-flex align-items-center justify-content-center">
     <div className="jumbotron jumbotron-fluid bg-transparent">
       <div className="container secondary-color">
-        <h1 className="display-4">Tasks</h1>
+        <h1 className="display-4">MTM</h1>
         <p className="lead">
-          A task manager for your daily needs.
+          The simplest, most manual task manager app you have ever used. Enjoy!
         </p>
         <hr className="my-4" />
         <Link

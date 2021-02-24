@@ -5,8 +5,20 @@ class Tasks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
+      tasks: []
     };
+
+    this.changeTag = this.changeTag.bind(this);
+    this.changeTitle = this.changeTitle.bind(this);
+    this.editStart = this.editStart.bind(this);
+    this.editEnd = this.editEnd.bind(this);
+    this.stripHtmlEntities = this.stripHtmlEntities.bind(this);
+  }
+
+  stripHtmlEntities(str) {
+    return String(str)
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
   componentDidMount() {
@@ -27,7 +39,7 @@ class Tasks extends React.Component {
     const { tasks } = this.state;
     const taskId = tasks.findIndex((task) => task.id === id);
     tasks[taskId].title = event.target.value;
-    this.setState({ tasks });
+    this.setState({ tasks: tasks });
   }
 
   changeTag(id, event) {
@@ -35,7 +47,7 @@ class Tasks extends React.Component {
     const { tasks } = this.state;
     const taskId = tasks.findIndex((task) => task.id === id);
     tasks[taskId].tag = event.target.value;
-    this.setState({ tasks });
+    this.setState({ tasks: tasks });
   }
 
   editStart(id) {
@@ -46,11 +58,14 @@ class Tasks extends React.Component {
     }))
   }
 
-  editEnd(id) {
+  editEnd(id, event) {
+    event.preventDefault()
     const url = `/api/v1/edit/${id}`;
+    const { tasks } = this.state;
+    const taskId = tasks.findIndex((task) => task.id === id);
     const body = {
-      title: "test",
-      tag: "work"
+      title: tasks[taskId].title, 
+      tag: tasks[taskId].tag
     };
 
     const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -116,23 +131,34 @@ class Tasks extends React.Component {
                   {!task.editToggle
                     ? (<div className="text-md-left w-75 p-1"><p>{task.title}</p>
                       <span className="badge rounded-pill bg-info text-white">{task.tag}</span></div>)
-                    : (<div className="form-group w-75">
-                      <input
-                        type="text"
-                        defaultValue={task.title}
-                        name="title"
-                        id="taskTitle"
-                        className="form-control"
-                        onChange={(event) => { this.changeTitle(task.id, event) }}
-                      />
-                      <input
-                        type="text"
-                        defaultValue={task.tag}
-                        name="tag"
-                        id="taskTag"
-                        className="form-control"
-                        onChange={(event) => { this.changeTag(task.id, event) }}
-                      /></div>
+                    : (<form onSubmit={(event) => this.editEnd(task.id, event)}>
+                        <div className="form-group w-75">
+                          <label htmlFor="taskTitle">Task Title</label>
+                          <input
+                            type="text"
+                            defaultValue={task.title}
+                            name="title"
+                            id="taskTitle"
+                            className="form-control"
+                            required
+                            onChange={(event) => { this.changeTitle(task.id, event)}}
+                          />
+                          <label htmlFor="taskTag">Tag</label>
+                          <input
+                            type="text"
+                            defaultValue={task.tag}                   
+                            name="tag"
+                            id="taskTag"
+                            className="form-control"
+                            required
+                            onChange={(event) => { this.changeTag(task.id, event) }}
+                          />
+                        </div>
+                        <button type="submit" className="btn custom-button mt-3">
+                          Save
+                        </button>
+                      </form>
+                    
                     )}
                 </div>
                 <div className="column">
@@ -149,11 +175,7 @@ class Tasks extends React.Component {
                         <path d="M13.498.795l.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
                       </svg>
                     </button>
-                    : <button className="btn btn-dark align-middle">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="32" fill="white" className="bi bi-pen float-right" viewBox="0 0 16 16" onClick={() => this.editEnd(task.id)}>
-                        <path d="M13.498.795l.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
-                      </svg>
-                    </button>}
+                    : <div></div>}
                 </div>
                 <div className="column">
                   <button className="btn btn-light align-middle">

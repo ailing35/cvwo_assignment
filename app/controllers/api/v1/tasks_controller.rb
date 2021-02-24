@@ -32,7 +32,7 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def update
-    if task
+    if task.update(task_params)
       render json: task
     else
       render json: task.errors

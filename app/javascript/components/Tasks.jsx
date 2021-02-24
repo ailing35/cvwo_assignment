@@ -7,18 +7,6 @@ class Tasks extends React.Component {
     this.state = {
       tasks: []
     };
-
-    this.changeTag = this.changeTag.bind(this);
-    this.changeTitle = this.changeTitle.bind(this);
-    this.editStart = this.editStart.bind(this);
-    this.editEnd = this.editEnd.bind(this);
-    this.stripHtmlEntities = this.stripHtmlEntities.bind(this);
-  }
-
-  stripHtmlEntities(str) {
-    return String(str)
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
   }
 
   componentDidMount() {
@@ -113,7 +101,7 @@ class Tasks extends React.Component {
       })
       .then(() => this.props.history.push("/tasks"))
       .catch(error => console.log(error.message));
-
+    
     this.setState((prevState) => ({
       tasks: prevState.tasks.filter(task => task.id !== id)
     }))
@@ -161,21 +149,21 @@ class Tasks extends React.Component {
                     
                     )}
                 </div>
+                {!task.editToggle ?
+                <div className="row">
                 <div className="column">
                   <button className="btn btn-light align-middle">
                     <svg xmlns="https://www.w3.org/2000/svg" width="30" height="32" fill="green" className="bi bi-check2 float-right" viewBox="0 0 16 16" onClick={() => { this.deleteTask(task.id) }}>
                       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
                     </svg>
                   </button>
-                </div>
+                </div>                
                 <div className="column">
-                  {!task.editToggle
-                    ? <button className="btn btn-light align-middle">
-                      <svg xmlns="https://www.w3.org/2000/svg" width="30" height="32" fill="currentColor" className="bi bi-pen float-right" viewBox="0 0 16 16" onClick={() => this.editStart(task.id)}>
+                <button className="btn btn-light align-middle">
+                      <svg xmlns="https://www.w3.org/2000/svg" width="30" height="32" fill="currentColor" className="bi bi-pen float-right" viewBox="0 0 16 16" onClick={() => { this.editStart(task.id)}}>
                         <path d="M13.498.795l.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
                       </svg>
                     </button>
-                    : <div></div>}
                 </div>
                 <div className="column">
                   <button className="btn btn-light align-middle">
@@ -185,6 +173,8 @@ class Tasks extends React.Component {
                     </svg>
                   </button>
                 </div>
+                </div>
+                : <div></div>}
               </div>
             </h5>
           </div>
@@ -203,10 +193,7 @@ class Tasks extends React.Component {
       <>
         <section className="jumbotron jumbotron-fluid text-center">
           <div className="container py-5">
-            <h1 className="display-4">Task Manager</h1>
-            <p className="lead text-muted">
-              * Unfortunately, the edit button does not work *
-            </p>
+            <h1 className="display-4">Manual Task Manager</h1>
           </div>
         </section>
         <div className="py-5">

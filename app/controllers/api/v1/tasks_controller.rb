@@ -45,6 +45,6 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
-      params.permit(:title, :tag)
+      params.permit(:title, :tag, :id, :task)
     end
 end

@@ -6,7 +6,8 @@ class Tasks extends React.Component {
     super(props);
     this.state = {
       tasks: [],
-      sortByDate: true
+      sortByDate: true,
+      search: null
     }; 
 
   }
@@ -109,9 +110,13 @@ class Tasks extends React.Component {
     }))
   }
 
+  onSearch(event) {
+    let keyword = event.target.value;
+    this.setState({search: keyword})
+  }
+
   onSort() {
     this.setState((prevState) => ({
-      tasks: prevState.tasks,
       sortByDate: !prevState.sortByDate
     }))
   }
@@ -177,25 +182,42 @@ class Tasks extends React.Component {
     );
 
     const renderRecord = (task) => (
-      <div className="text-md-left w-75 p-1"><p>{task.title}</p>
-      <p className="badge rounded-pill bg-info text-white">{task.tag}</p></div>
+      <div className="row w-75 ml-2">
+         {task.title}
+         <p className="badge rounded-pill bg-info text-white ml-3">{task.tag}</p>
+      </div>
     );
     
+    const search = (
+        <input
+            type="text"
+            placeholder="Search by tag"
+            onChange={(event) => { this.onSearch(event)}}
+          />
+    );
 
-    const sortedTasks = () => {
-      let copy = [...tasks];
+    const filteredData = tasks.filter((data) => {
+      if (this.state.search == null) {
+        return data;
+      } else if (data.tag.toLowerCase().includes(this.state.search.toLowerCase())) {
+        return data;
+      }
+    })
+
+    const sortedTasks = (filteredData) => {
+      let copy = [...filteredData];
       if (sortByDate) {
-        return tasks;
+        return filteredData;
       } else {
         return copy.sort((a, b) => a.tag > b.tag ? 1 : -1);
       }
     };
 
-    const allTasks = sortedTasks().map((task, index) => (
+    const allTasks = sortedTasks(filteredData).map((task, index) => (
       <div key={index} className="w-100">
         <div className="card mb-2 align-middle">
           <div className="card-body mb-0">
-            <h5 className="card-title">
+            <h5 className="card-text">
               <div className="row">
                 <div className="column col-10">
                   {!task.editToggle
@@ -221,26 +243,32 @@ class Tasks extends React.Component {
     return (
       <>
         <section className="jumbotron jumbotron-fluid text-center">
-          <div className="container py-4">
+          <div className="container py-3">
             <h1 className="display-4">Manual Task Manager</h1>
           </div>
         </section>
         <div className="py-5">
           <main className="container">
-            <div className="text-right mb-3">
+            <div className="row mb-3">
+              <div className="col-2 text-left mr-1">
+              { search }
+              </div>
+              <div className="col-8">
               {sortByDate
-              ? <button className="btn custom-button mt-3 align-middle mr-1" onClick={() => this.onSort()}>
+              ? <button className="btn custom-button custom" onClick={() => this.onSort()}>
                   Sort by Tag
                 </button>
-              : <button className="btn custom-button mt-3 align-middle mr-1" onClick={() => this.onSort()}>
+              : <button className="btn btn-secondary custom" onClick={() => this.onSort()}>
                   Sort by Date Created
                 </button>
-              }
+              }</div>
+              <div className="col text-right">
               <Link to="/new_task">
                 <svg xmlns="https://www.w3.org/2000/svg" height="32" fill="black" className="bi bi-plus-square-fill" viewBox="0 0 16 16">
                   <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z" />
                 </svg>
               </Link>
+              </div>
             </div>
             <div className="row">
               {tasks.length > 0 ? allTasks : noTask}

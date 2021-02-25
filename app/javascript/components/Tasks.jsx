@@ -242,7 +242,7 @@ class Tasks extends React.Component {
       </div>
     );
       
-    let date = this.state.curTime.getDate();
+    let day = this.state.curTime.getDate();
     let month = this.state.curTime.getMonth() + 1;
     let year = this.state.curTime.getFullYear();
     return (
@@ -250,7 +250,7 @@ class Tasks extends React.Component {
         <section className="jumbotron jumbotron-fluid text-center">
           <div className="container py-3">
             <h1 className="display-4">Manual Task Manager</h1>
-            <h2>{date}/{month}/{year}   <Clock format={'HH:mm:ss'} ticking={true} timezone={'Singapore'} /></h2>
+            <h2>{day}/{month}/{year}   <Clock format={'HH:mm:ss'} ticking={true} timezone={'Singapore'} /></h2>
           </div>
         </section>
         <div className="py-5">

@@ -1,4 +1,5 @@
 class Api::V1::TasksController < ApplicationController
+  
   def index
     task = Task.all.order(created_at: :asc)
     render json: task
@@ -53,7 +54,7 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
-      params.permit(:title, :tag)
+      params.permit(:title, :tag, :task)
     end
 
 end

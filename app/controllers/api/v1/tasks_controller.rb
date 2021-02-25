@@ -1,25 +1,15 @@
 class Api::V1::TasksController < ApplicationController
-  before_action :authenticate_user!
   def index
-    if user_signed_in?
-      currentTasks = current_user.tasks
-      task = Task.all.order(created_at: :asc)
-      render json: currentTasks
-    else
-      render json: {}, status: 401
-    end
+    task = Task.all.order(created_at: :asc)
+    render json: task
   end
 
   def create
-    if user_signed_in?
-      if currentTask = current_user.tasks.create(task_params)
-        render json: currentTask, status: :created
-      else
-        render json: task.errors
-      end
-    #task = Task.create!(task_params)
-    else 
-      render json: {}, status: 401
+    task = Task.create!(task_params)
+    if task
+      render json: task
+    else
+      render json: task.errors
     end
   end
 
@@ -51,7 +41,7 @@ class Api::V1::TasksController < ApplicationController
   def search
     @tasks = Task.search(params[:query])
     if request.xhr?
-      render :json => @songs.to_json
+      render :json => @tasks.to_json
     else
       render :index
     end
@@ -63,7 +53,7 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
-      params.permit(:title, :tag, :user_id)
+      params.permit(:title, :tag)
     end
 
 end

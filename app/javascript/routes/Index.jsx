@@ -4,7 +4,6 @@ import Home from "../components/Home";
 import Tasks from "../components/Tasks";
 import NewTask from "../components/NewTask";
 
-
 export default (
   <Router>
     <Switch>

@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Clock from 'react-live-clock';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Moment from 'moment';
 
 class Tasks extends React.Component {
   constructor(props) {
@@ -43,6 +46,14 @@ class Tasks extends React.Component {
     this.setState({ tasks: tasks });
   }
 
+  changeDate(id, event) {
+
+    const { tasks } = this.state;
+    const taskId = tasks.findIndex((task) => task.id === id);
+    tasks[taskId].date = event.toString();
+    this.setState({ tasks: tasks });
+  }
+
   editStart(id) {
     this.setState(prevState => ({
       tasks: prevState.tasks.map(
@@ -58,7 +69,8 @@ class Tasks extends React.Component {
     const taskId = tasks.findIndex((task) => task.id === id);
     const body = {
       title: tasks[taskId].title, 
-      tag: tasks[taskId].tag
+      tag: tasks[taskId].tag,
+      date: tasks[taskId].date
     };
 
     const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -175,6 +187,14 @@ class Tasks extends React.Component {
             className="form-control"
             required
             onBlur={(event) => { this.changeTag(task.id, event) }}
+          /><div></div>
+          <label htmlFor="taskTag">End Date</label>   
+          <DatePicker
+            selected={ this.state.curTime }
+            onChange={(event) => {this.changeDate(task.id, event) }}
+            selectsStart
+            name="date"
+            dateFormat="dd/MM/yyyy"
           />
         </div>
         <button type="submit" className="btn custom-button mt-3">
@@ -184,9 +204,13 @@ class Tasks extends React.Component {
     );
 
     const renderRecord = (task) => (
-      <div className="row w-75 ml-2">
+      <div className="row w-75">
+         <div className="col-8">
          {task.title}
-         <p className="badge rounded-pill bg-info text-white ml-3">{task.tag}</p>
+         <p className="badge rounded-pill bg-info text-white ml-3">{task.tag}</p> 
+         </div><div className="col text-right">
+           {Moment(task.date).format('Do MMM yyyy')}
+           </div> 
       </div>
     );
     
@@ -211,7 +235,7 @@ class Tasks extends React.Component {
       if (sortByDate) {
         return filteredData;
       } else {
-        return copy.sort((a, b) => a.tag > b.tag ? 1 : -1);
+        return copy.sort((a, b) => a.tag.toLowerCase() > b.tag.toLowerCase() ? 1 : -1);
       }
     };
 
@@ -249,7 +273,7 @@ class Tasks extends React.Component {
       <>
         <section className="jumbotron jumbotron-fluid text-center">
           <div className="container py-3">
-            <h1 className="display-4">Manual Task Manager</h1>
+            <h2>Manage your tasks, optimise your time</h2>
             <h2>{day}/{month}/{year}   <Clock format={'HH:mm:ss'} ticking={true} timezone={'Singapore'} /></h2>
           </div>
         </section>
@@ -279,8 +303,8 @@ class Tasks extends React.Component {
             <div className="row">
               {tasks.length > 0 ? allTasks : noTask}
             </div>
-            <Link to="/" className="btn btn-link">
-              Home
+            <Link to="/" className="btn custom-button">
+              Back
             </Link>
           </main>
         </div>

@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class NewTask extends React.Component {
   constructor(props) {
@@ -7,10 +9,11 @@ class NewTask extends React.Component {
     this.state = {
       title: "",
       tag: "",
+      date: new Date()
     };
-
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.stripHtmlEntities = this.stripHtmlEntities.bind(this);
   }
 
@@ -24,16 +27,22 @@ class NewTask extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleChange(event) {
+    this.setState({
+      date: event
+    })
+  }
+
   onSubmit(event) {
     event.preventDefault();
     const url = "/api/v1/tasks/create";
-    const { title, tag } = this.state;
+    const { title, tag, date } = this.state;
 
     if (title.length == 0)
       return;
 
     const body = {
-      title, tag
+      title, tag, date
     };
 
     const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -83,6 +92,15 @@ class NewTask extends React.Component {
                   required
                   onChange={this.onChange}
                 />
+                <label htmlFor="taskTag">End Date</label>
+                <div></div>
+                <DatePicker
+                  selected={ this.state.date }
+                  onChange={ this.handleChange }
+                  selectsStart
+                  name="date"
+                  dateFormat="dd/MM/yyyy"
+                />
               </div>
               <button type="submit" className="btn custom-button mt-3">
                 Create Task
@@ -91,6 +109,7 @@ class NewTask extends React.Component {
                   Back to tasks
                 </Link>
             </form>
+            
           </div>
         </div>
       </div>

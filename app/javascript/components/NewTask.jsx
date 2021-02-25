@@ -6,7 +6,7 @@ class NewTask extends React.Component {
     super(props);
     this.state = {
       title: "",
-      tag: ""
+      tag: "",
     };
 
     this.onChange = this.onChange.bind(this);

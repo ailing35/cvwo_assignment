@@ -46,13 +46,6 @@ class Tasks extends React.Component {
     this.setState({ tasks: tasks });
   }
 
-  changeDate(id, event) {
-
-    const { tasks } = this.state;
-    const taskId = tasks.findIndex((task) => task.id === id);
-    tasks[taskId].date = event.toString();
-    this.setState({ tasks: tasks });
-  }
 
   editStart(id) {
     this.setState(prevState => ({
@@ -70,7 +63,6 @@ class Tasks extends React.Component {
     const body = {
       title: tasks[taskId].title, 
       tag: tasks[taskId].tag,
-      date: tasks[taskId].date
     };
 
     const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -188,14 +180,6 @@ class Tasks extends React.Component {
             required
             onBlur={(event) => { this.changeTag(task.id, event) }}
           /><div></div>
-          <label htmlFor="taskTag">End Date</label>   
-          <DatePicker
-            selected={ this.state.curTime }
-            onChange={(event) => {this.changeDate(task.id, event) }}
-            selectsStart
-            name="date"
-            dateFormat="dd/MM/yyyy"
-          />
         </div>
         <button type="submit" className="btn custom-button mt-3">
           Save
@@ -205,12 +189,8 @@ class Tasks extends React.Component {
 
     const renderRecord = (task) => (
       <div className="row w-75">
-         <div className="col-8">
          {task.title}
          <p className="badge rounded-pill bg-info text-white ml-3">{task.tag}</p> 
-         </div><div className="col text-right">
-           {Moment(task.date).format('Do MMM yyyy')}
-           </div> 
       </div>
     );
     

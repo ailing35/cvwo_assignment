@@ -1,7 +1,7 @@
 class Api::V1::TasksController < ApplicationController
   
   def index
-    task = Task.all.order(:tag, created_at: :desc)
+    task = Task.all.order(created_at: :asc)
     render json: task
   end
 
@@ -39,12 +39,22 @@ class Api::V1::TasksController < ApplicationController
     end
   end
 
+  def search
+    @tasks = Task.search(params[:query])
+    if request.xhr?
+      render :json => @songs.to_json
+    else
+      render :index
+    end
+  end
+
   private
     def task
       @task ||= Task.find(params[:id])
     end
 
     def task_params
-      params.permit(:title, :tag, :id, :task)
+      params.permit(:title, :tag)
     end
+
 end

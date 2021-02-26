@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 class NewTask extends React.Component {
@@ -84,7 +83,6 @@ class NewTask extends React.Component {
                   required
                   onChange={this.onChange}
                 />
-                <div></div>
               </div>
               <button type="submit" className="btn custom-button mt-3">
                 Create Task
